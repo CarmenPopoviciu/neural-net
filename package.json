@@ -1,0 +1,11 @@
+{
+  "name": "neural-net",
+  "version": "1.0.0",
+  "description": "A basic implementation of a neural net",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarmenPopoviciu/neural-net.git"
+  },
+  "author": "Carmen Popoviciu <carmen.popoviciu@gmail.com>",
+  "license": "ISC"
+}
