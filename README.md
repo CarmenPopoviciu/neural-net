@@ -5,7 +5,7 @@ Basic implementation of a feedforward neural network.
 ### How to use it in a nutshell
 
 ![neural-net-rec]
-(https://cloud.githubusercontent.com/assets/4638332/18604056/265cedbc-7c78-11e6-96e9-06181f050bda.gif)
+(https://cloud.githubusercontent.com/assets/4638332/18604559/7c637cde-7c7e-11e6-889b-0ab166e675ba.gif)
 
 ### Running an execution context for the net
 

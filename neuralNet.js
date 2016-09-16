@@ -70,7 +70,7 @@
    * @param {Number} config.learningRate The learning rate
    * @param {Number} config.numEpochs    The number of epochs used for training the net 
    */
-  var NeuralNet = function NeuralNet(config) {
+  function NeuralNet(config) {
     config = config || {};
 
     this.layers = [];

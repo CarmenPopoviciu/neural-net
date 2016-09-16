@@ -5,7 +5,7 @@
   const sigmoidPrime = require('./utils/sigmoid-prime');
 
 
-  let Neuron = function Neuron() {
+  function Neuron() {
     this.weights = null,
     this.bias = null,
     this.weightedInput = null,
