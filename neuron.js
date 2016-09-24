@@ -1,11 +1,11 @@
 (function() {
   'use strict';
 
-  const sigmoid = require('./utils/sigmoid');
-  const sigmoidPrime = require('./utils/sigmoid-prime');
+  const activations = require('./activations');
 
 
   function Neuron() {
+    this.activation = null;
     this.weights = null,
     this.bias = null,
     this.weightedInput = null,
@@ -14,6 +14,18 @@
     this.gradientB = null;
     this.output = null;
   }
+
+  /**
+   * @description
+   * Initialise the neuron's type of activation function. If passed type is
+   * not supported, will default to the SIGMOID function (see activation.js
+   * for supported activation function types)
+   * 
+   * @param {String} activation The name of the activation fn (eg. SIGMOID)
+   */
+  Neuron.prototype.initialiseActivationFn = function(activation='SIGMOID') {
+    this.activation = activations[activation.toUpperCase()];
+  };
 
 
   /**
@@ -26,7 +38,11 @@
    *    
    * @param {Number} numInputs The number of inputs of the neuron
    */
-  Neuron.prototype.initialiseWeights = function(numInputs) {
+  Neuron.prototype.initialiseWeights = function(numInputs, values) {
+    if(values && values.length) {
+      this.weights = values;
+      return;
+    }
     this.weights = [];
     for(let i=0; i<numInputs; i++) {
       this.weights.push(Math.random());
@@ -39,8 +55,8 @@
    * 
    * The bias is just a random number between 0 and 1
    */
-  Neuron.prototype.initialiseBias = function() {
-    this.bias = Math.random();
+  Neuron.prototype.initialiseBias = function(value) {
+    this.bias = value || Math.random();
   };
 
   /**
@@ -91,7 +107,7 @@
    * neuron. More soon :)
    */
   Neuron.prototype.updateOutput = function() {
-    this.output = sigmoid(this.weightedInput);
+    this.output = this.activation.fn(this.weightedInput);
   };
 
   /**
@@ -106,7 +122,7 @@
    * @param {Number} expectedOutput The expectedOutput
    */
   Neuron.prototype.updateOutputError = function(expectedOutput) {
-    this.error = (this.output - expectedOutput) * sigmoidPrime(this.weightedInput);
+    this.error = (this.output - expectedOutput) * this.activation.fnPrime(this.weightedInput);
   };
 
   /**
@@ -125,7 +141,7 @@
     nextLayer.nodes.forEach((nextNode) =>
       this.error += nextNode.error * nextNode.weights[crrNodeIndex]
     );
-    this.error *= sigmoidPrime(this.weightedInput);
+    this.error *= this.activation.fnPrime(this.weightedInput);
   }
 
   /**

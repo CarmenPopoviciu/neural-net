@@ -9,6 +9,10 @@
   "author": "Carmen Popoviciu <carmen.popoviciu@gmail.com>",
   "license": "ISC",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "clean-snapshots": "rm -rf snapshots/*"
+  },
+  "dependencies": {
+    "jsonfile": "^2.4.0"
   }
 }

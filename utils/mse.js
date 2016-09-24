@@ -2,6 +2,7 @@
   'use strict';
 
   /**
+   * @description
    * Mean Squarred Error Cost Function
    * (see https://en.wikipedia.org/wiki/Mean_squared_error)
    */
