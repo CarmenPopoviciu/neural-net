@@ -18,7 +18,7 @@
    * 
    * Upon instantiation, the net can be configured with the following 
    * properties: 
-   *   1. a LEARNING RATE, which indicates how fast a neuron will learningRate
+   *   1. a LEARNING RATE, which indicates how fast a neuron will learn
    *   2. the NUMBER OF EPOCHS, which is a measure of the number of times the
    *      entire training data set is fed to the network in order to train it
    * 
