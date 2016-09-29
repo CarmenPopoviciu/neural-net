@@ -27,7 +27,7 @@ Run `npm run clean-snapshots` to remove all snapshot files in the snapshots fold
 
 or
 
-```
+```javascript
 let customConfig = {
   learningRate: 0.5,
   numEpochs: 2000
@@ -39,7 +39,9 @@ if you are using a custom configuration.
 
 ### Initialise the net based on a layer configuration
 
-`myNet.initialise({layers: [2,3,3,1]});`
+```javascript
+myNet.initialise({layers: [2,3,3,1]});
+```
 
 Initialising a net instance using a layer configuration implies defining the number 
 of layers in the net, and the number of nodes in each layer.
@@ -53,7 +55,7 @@ the output layer just one neuron.
 An alternative to the above method is to initialise the net with data from an existing
 snapshot. 
 
-```
+```javascript
 let myNet = new NeuralNet();
 myNet.initalise('path/to/snapshot.json');
 myNet.predict([0,1]);
@@ -74,7 +76,9 @@ to a local net.
 
 ### Train the net
 
-`myNet.train([ [[0,0],[0]], [[0,1],[1]]]);`
+```javascript
+myNet.train([ [[0,0],[0]], [[0,1],[1]]]);
+```
 
 Once the net is initialised it can be trained with a given training data set. The
 training set can contain one or multiple items, like in the example above. The number
@@ -85,4 +89,6 @@ number of epochs of 1000 for example, the net will process each entry in the dat
 
 ### Predict an output
 
-`myNet.predict([[0,1]]);  // hopefully outputs 1 ;)`
+```javascript
+myNet.predict([[0,1]]);  // hopefully outputs 1 ;)
+```
