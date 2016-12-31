@@ -90,5 +90,5 @@ number of epochs of 1000 for example, the net will process each entry in the dat
 ### Predict an output
 
 ```javascript
-myNet.predict([[0,1]]);  // hopefully outputs 1 ;)
+myNet.predict([0,1]);  // hopefully outputs 1 ;)
 ```
