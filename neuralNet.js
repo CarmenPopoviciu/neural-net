@@ -217,8 +217,12 @@
    */
   NeuralNet.prototype.takeSnapshot = function() {
     let now = new Date();
-    let date = `${now.toLocaleDateString().replace(/\//g,'-')}-${now.toLocaleTimeString()}`; 
-    let file = `${__dirname}/snapshots/snapshot(${date}).json`;
+    let dd = now.getDate();
+    let mm = now.getMonth() + 1;
+    if(dd < 10) dd = '0' + dd;
+    if(mm < 10) mm = '0' + mm;
+    let date = `${now.getFullYear()}${mm}${dd}_${now.getHours()}${now.getMinutes()}${now.getSeconds()}`; 
+    let file = `${__dirname}/snapshots/snapshot${date}.json`;
     let snapshot = {layers: []};
 
     this.layers.forEach((layer) => {
@@ -236,7 +240,7 @@
       snapshot.layers.push(crrLayerSnapshot);
     });
 
-    jsonFile.writeFile(file, snapshot, {spaces: 2, flag: 'wx'}, function(err) {
+    jsonFile.writeFile(file, snapshot, {spaces: 2, flag: 'w'}, function(err) {
       if(err) console.log(`takeSnapshot: ${err}`);
     });
   };

@@ -57,7 +57,7 @@ snapshot.
 
 ```javascript
 let myNet = new NeuralNet();
-myNet.initalise('path/to/snapshot.json');
+myNet.initalise({snapshot: 'path/to/snapshot.json'});
 myNet.predict([0,1]);
 ```
 
