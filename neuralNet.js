@@ -240,7 +240,7 @@
       snapshot.layers.push(crrLayerSnapshot);
     });
 
-    jsonFile.writeFile(file, snapshot, {spaces: 2, flag: 'w'}, function(err) {
+    jsonFile.writeFile(file, snapshot, {spaces: 2, flag: 'wx'}, function(err) {
       if(err) console.log(`takeSnapshot: ${err}`);
     });
   };
