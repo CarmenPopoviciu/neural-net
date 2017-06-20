@@ -1,6 +1,5 @@
 (function() {
   'use strict';
-
   const Neuron = require('./neuron');
   const activations = require('./activations');
   const mse = require('./utils/mse');
@@ -88,7 +87,7 @@
     this.batchSize = config.batchSize || 1;
     this.learningRate = config.learningRate || 0.3;
     this.numEpochs = config.numEpochs || 10000;
-  };
+  }
 
   /**
    * @description
@@ -123,24 +122,30 @@
    * 
    * 
    * @param {Object} config The network configuration
-   * @param {Array}  config.layers      The layers configuration
-   * @param {String} config.snapshot    The filename of a
-   * @param {String} config.activation  Name of the activation function. See activations.js for 
-   *                                    supported functions   
+   * @param {Array}  config.layers               The layers configuration
+   * @param {String | Object} config.snapshot    Snapshot filename or object
+   * @param {String} config.activation           Name of the activation function. See activations.js for 
+   *                                             supported functions   
    */
   NeuralNet.prototype.initialise = function(config) {
-    if(!config.layers && !config.snapshot) {
-      throw new Error(`initialise: Can't initialise net. Please provide a layer configuration or a snapshot file to get started`);
+    if (!config.layers && !config.snapshot) {
+      throw new Error(
+        `initialise: Can't initialise net. Please provide a layer configuration or a snapshot to get started`
+      );
     }
 
-    if(config.activation && !activations.isSupportedActivation(config.activation)) {
-      throw new Error(`initialise: Unsupported activation function. Please use one of the following: ${activations.activations()}`);
+    if (
+      config.activation &&
+      !activations.isSupportedActivation(config.activation)
+    ) {
+      throw new Error(
+        `initialise: Unsupported activation function. Please use one of the following: ${activations.activations()}`
+      );
     }
 
-    if(config.snapshot) initialiseNetFromSnapshot.apply(this, [config]);
+    if (config.snapshot) initialiseNetFromSnapshot.apply(this, [config]);
     else initialiseNetWithLayerConfig.apply(this, [config]);
-  }
-
+  };
 
   /**
    * @description
@@ -150,17 +155,25 @@
    * @param {String} activation  The activation function for each node in the layer
    * @param {Array} [nodeValues] Initialisation values for each node in the layer
    */
-  NeuralNet.prototype.addLayer = function addLayer(numNodes, activation, nodeValues) {
-    if(!numNodes) throw new Error(`addLayerFn: Please specify the number of nodes in the layer.`);
-    if((typeof numNodes !== 'number') || !Number.isInteger(numNodes)) {
-        throw new Error(`addLayerFn: Number of nodes arg should be an integer, got ${typeof numNodes} instead.`);
+  NeuralNet.prototype.addLayer = function addLayer(
+    numNodes,
+    activation,
+    nodeValues
+  ) {
+    if (!numNodes)
+      throw new Error(
+        `addLayerFn: Please specify the number of nodes in the layer.`
+      );
+    if (typeof numNodes !== 'number' || !Number.isInteger(numNodes)) {
+      throw new Error(
+        `addLayerFn: Number of nodes arg should be an integer, got ${typeof numNodes} instead.`
+      );
     }
 
     this.layers.push({
       nodes: initialiseNodes(numNodes, this.layers, activation, nodeValues)
     });
   };
-
 
   /**
    * @description
@@ -180,24 +193,24 @@
    * 
    * TODO(@carmen) the format of the expected training data set sucks. Fix it!!
    */
-    NeuralNet.prototype.train = function(trainData) {
+  NeuralNet.prototype.train = function(trainData) {
     let crrEpoch = 1;
 
-    while(crrEpoch <= this.numEpochs) {
+    while (crrEpoch <= this.numEpochs) {
       trainData.forEach((set, index) => {
         let input = set[0];
         let output = set[1];
 
         feedforward(input, this.layers);
         backprop(output, this.layers);
-        if(((index + 1) % this.batchSize) === 0) {
+        if ((index + 1) % this.batchSize === 0) {
           updateWeights(this.layers, this.learningRate);
           updateBiases(this.layers, this.learningRate);
         }
       });
       crrEpoch++;
     }
-  }
+  };
 
   /**
    * @description
@@ -208,7 +221,7 @@
    */
   NeuralNet.prototype.predict = function(data) {
     return feedforward(data, this.layers);
-  }
+  };
 
   /**
    * @description
@@ -217,11 +230,13 @@
    */
   NeuralNet.prototype.takeSnapshot = function() {
     let now = new Date();
-    let date = `${now.toLocaleDateString().replace(/\//g,'-')}-${now.toLocaleTimeString()}`; 
+    let date = `${now
+      .toLocaleDateString()
+      .replace(/\//g, '-')}-${now.toLocaleTimeString()}`;
     let file = `${__dirname}/snapshots/snapshot(${date}).json`;
-    let snapshot = {layers: []};
+    let snapshot = { layers: [] };
 
-    this.layers.forEach((layer) => {
+    this.layers.forEach(layer => {
       let crrLayerSnapshot = {
         nodes: []
       };
@@ -236,8 +251,10 @@
       snapshot.layers.push(crrLayerSnapshot);
     });
 
-    jsonFile.writeFile(file, snapshot, {spaces: 2, flag: 'wx'}, function(err) {
-      if(err) console.log(`takeSnapshot: ${err}`);
+    jsonFile.writeFile(file, snapshot, { spaces: 2, flag: 'wx' }, function(
+      err
+    ) {
+      if (err) console.log(`takeSnapshot: ${err}`);
     });
   };
 
@@ -254,10 +271,10 @@
    */
   NeuralNet.prototype.gradientCheck = function(trainData) {
     let lyrs = this.layers.slice(1, this.layers.length), // exclude first layer since it has no weights
-        input = trainData[0],
-        expectedOutput = trainData[1],
-        epsilon = Math.pow(10, -4),
-        numGradient;
+      input = trainData[0],
+      expectedOutput = trainData[1],
+      epsilon = Math.pow(10, -4),
+      numGradient;
 
     lyrs.forEach((layer, layerIndex) => {
       layer.nodes.forEach((node, nodeIndex) => {
@@ -278,13 +295,17 @@
           node.weights[index] = weight;
         });
 
-        console.log(`The numerical gradients for node ${nodeIndex+1} on layer ${layerIndex+2} are: ${numericalGradients}`);
-        console.log(`The computed gradients for the same nodes are: ${node.gradientsW}`);
+        console.log(
+          `The numerical gradients for node ${nodeIndex +
+            1} on layer ${layerIndex + 2} are: ${numericalGradients}`
+        );
+        console.log(
+          `The computed gradients for the same nodes are: ${node.gradientsW}`
+        );
         console.log();
       });
     });
-  }
-
+  };
 
   /**
    * @description
@@ -295,33 +316,44 @@
    *                        js docs for a complete description of the expected object)
    */
   function initialiseNetWithLayerConfig(config) {
-    if(!config.layers.length) {
-      throw new Error(`initialiseNetWithLayerConfig: Can't initialise net with undefined number of layers`);
+    if (!config.layers.length) {
+      throw new Error(
+        `initialiseNetWithLayerConfig: Can't initialise net with undefined number of layers`
+      );
     }
-    config.layers.forEach((numNodes) =>
+    config.layers.forEach(numNodes =>
       this.addLayer(numNodes, config.activation)
     );
   }
 
-
   /**
    * @description
-   * Initialise net based on an external snapshot file (see the `initialise` js doc
-   * for a complete description of what a snapshot is)
+   * Initialise net based on 
+   *   - an external snapshot file (see the `initialise` js doc for a complete 
+   *     description of what a snapshot is)
+   *   - a snapshot-like object
    * 
-   * @param {Object} config The net configuration object (see `initialise` function
-   *                        js docs for a complete description of the expected object) 
+   * @param {Object} config The NN configuration
    */
   function initialiseNetFromSnapshot(config) {
-    jsonFile.readFile(config.snapshot, (err, obj) => {
-      if(err) console.log(err);
-
-      obj.layers.forEach((layer) => {
+    let addLayersFromSnapshot = snapshot => {
+      snapshot.layers.forEach(layer => {
         this.addLayer(layer.nodes.length, config.activation, layer.nodes);
       });
-    });
+    };
+
+    if (typeof config.snapshot === 'string') {
+      jsonFile.readFile(config.snapshot, (err, obj) => {
+        if (err) console.log(err);
+        addLayersFromSnapshot(obj);
+      });
+    } else {
+      if (config.snapshot && typeof config.snapshot === 'object') {
+        addLayersFromSnapshot(config.snapshot);
+      }
+    }
   }
-    
+
   /**
    * @description
    * Initialise a given number of neurons(referred here as 'nodes' for brevity) 
@@ -334,15 +366,18 @@
    * @param {Array} [values] Values to initialise nodes with
    * @return {Array} The initialised neurons
    */
-  function initialiseNodes(numNodes, layers, activation, values=[]) {
+  function initialiseNodes(numNodes, layers, activation, values = []) {
     let nodes = [];
 
-    for(let i=0; i<numNodes; i++) {
+    for (let i = 0; i < numNodes; i++) {
       let node = new Neuron();
-      if(layers.length > 0) {
+      if (layers.length > 0) {
         values[i] = values[i] || {};
         // we only need to initialise weigths/biases/error for the hidden/output layers
-        node.initialiseWeights(layers[layers.length-1].nodes.length, values[i].weights);
+        node.initialiseWeights(
+          layers[layers.length - 1].nodes.length,
+          values[i].weights
+        );
         node.initialiseBias(values[i].bias);
         node.initialiseError();
         node.initialiseActivationFn(activation);
@@ -351,7 +386,6 @@
     }
     return nodes;
   }
-
 
   /**
    * @description
@@ -365,13 +399,16 @@
     let output = [];
     layers.forEach(function(crrLayer, layerIndex) {
       crrLayer.nodes.forEach(function(node, index) {
-        if(layerIndex === 0) { // input layer
+        if (layerIndex === 0) {
+          // input layer
           node.output = inputs[index];
-        } else { // hidden layers
-          node.updateWeightedInput(layers[layerIndex-1]);
+        } else {
+          // hidden layers
+          node.updateWeightedInput(layers[layerIndex - 1]);
           node.updateOutput();
 
-          if(layerIndex === layers.length-1) { //output layer
+          if (layerIndex === layers.length - 1) {
+            //output layer
             output.push(node.output);
           }
         }
@@ -394,7 +431,7 @@
   function backprop(expectedOutput, layers) {
     // compute error(delta_L) for output layer
     // delta[L] = (predictedOutput-expectedOutput)*sigmoidPrime(weightedInput[L])
-    let outputLayer = layers[layers.length-1]; 
+    let outputLayer = layers[layers.length - 1];
     computeOutputLayerError(outputLayer, expectedOutput);
 
     // compute error(delta_l) for hidden layers
@@ -427,14 +464,13 @@
    * with respect to the error in each neuron of the next layer (l+1)
    */
   function computeHiddenLayersErrors(layers) {
-    let crrLayer,
-        nextLayer;
+    let crrLayer, nextLayer;
 
     // we want to compute this for all layers except input/output layers
-    for(let i=layers.length-2; i>0; i--) {
+    for (let i = layers.length - 2; i > 0; i--) {
       crrLayer = layers[i];
       crrLayer.nodes.forEach(function(node, crrNodeIndex) {
-        nextLayer = layers[i+1];
+        nextLayer = layers[i + 1];
         node.updateError(crrNodeIndex, nextLayer);
       });
     }
@@ -446,7 +482,7 @@
    * (see 'updateBias' function doc in neuron.js)
    */
   function updateBiases(layers, learningRate) {
-    for(let i=1; i<layers.length; i++) {
+    for (let i = 1; i < layers.length; i++) {
       layers[i].nodes.forEach(function(node) {
         node.updateBias(learningRate);
       });
@@ -459,14 +495,13 @@
    * (see 'updateWeights' function doc in neuron.js)
    */
   function updateWeights(layers, learningRate) {
-    for(let i=1; i<layers.length; i++) {
+    for (let i = 1; i < layers.length; i++) {
       layers[i].nodes.forEach(function(node) {
-        node.updateWeights(learningRate, layers[i-1]);
+        node.updateWeights(learningRate, layers[i - 1]);
         node.initialiseError(); // reset the error to 0
       });
     }
   }
 
   module.exports = NeuralNet;
-
 })();
