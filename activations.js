@@ -1,11 +1,11 @@
 (function() {
   'use strict';
-
   const sigmoid = require('./utils/sigmoid');
   const sigmoidPrime = require('./utils/sigmoid-prime');
+  const softmax = require('./utils/softmax');
 
-  const activations = ['SIGMOID'];
-  
+  const activations = ['SIGMOID', 'SOFTMAX'];
+
   module.exports = {
     /**
      * @description
@@ -14,6 +14,9 @@
     SIGMOID: {
       fn: sigmoid,
       fnPrime: sigmoidPrime
+    },
+    SOFTMAX: {
+      fn: softmax
     },
     /**
      * @description
@@ -35,6 +38,5 @@
       activation = activation.toUpperCase();
       return activations.includes(activation);
     }
-  }
-
+  };
 })();

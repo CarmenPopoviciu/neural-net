@@ -238,7 +238,8 @@
 
     this.layers.forEach(layer => {
       let crrLayerSnapshot = {
-        nodes: []
+        nodes: [],
+        activation: layer.activation
       };
 
       layer.nodes.forEach(function(node) {
@@ -338,7 +339,7 @@
   function initialiseNetFromSnapshot(config) {
     let addLayersFromSnapshot = snapshot => {
       snapshot.layers.forEach(layer => {
-        this.addLayer(layer.nodes.length, config.activation, layer.nodes);
+        this.addLayer(layer.nodes.length, layer.activation, layer.nodes);
       });
     };
 
